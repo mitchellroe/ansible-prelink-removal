@@ -1,0 +1,23 @@
+---
+# file: playbook-site.yml
+#
+# Main playbook for the prelink removal project.
+
+- name: Remove prelink from hosts on which it is disabled
+  hosts: localhost
+  become: yes
+  tasks:
+
+    - name: see if prelink is in use
+      command: grep -q '^PRELINKING=yes' /etc/sysconfig/prelink
+      register: prelink_check
+      # run even if we were passed `--check'
+      check_mode: no
+      ignore_errors: yes
+      changed_when: no
+
+    - name: remove prelink if it is not needed
+      yum:
+        name: prelink
+        state: absent
+      when: prelink_check.rc != 0
