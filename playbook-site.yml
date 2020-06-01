@@ -9,7 +9,7 @@
   tasks:
 
     - name: see if prelink is in use
-      command: grep -q '^PRELINKING=yes' /etc/sysconfig/prelink
+      command: grep -Fxq "PRELINKING=yes" /etc/sysconfig/prelink
       register: prelink_check
       # run even if we were passed `--check'
       check_mode: no
