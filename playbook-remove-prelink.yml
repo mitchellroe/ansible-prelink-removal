@@ -4,7 +4,7 @@
 # Main playbook for the prelink removal project.
 
 - name: Create ephemeral inventory groups
-- hosts: all
+  hosts: all
   tasks:
     - name: Group hosts based on OS distribution and major version
       group_by:
