@@ -21,3 +21,5 @@
         name: prelink
         state: absent
       when: prelink_check.rc != 0
+
+# vim:ft=yaml.ansible:
