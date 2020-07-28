@@ -17,18 +17,35 @@
   become: yes
   tasks:
 
-    - name: see if prelink is in use
-      command: grep -Fxq "PRELINKING=yes" /etc/sysconfig/prelink
-      register: prelink_check
-      # run even if we were passed `--check'
-      check_mode: no
-      ignore_errors: yes
-      changed_when: no
-
-    - name: remove prelink if it is not needed
+    - name: check whether prelink is installed
       yum:
         name: prelink
-        state: absent
-      when: prelink_check.rc != 0
+        state: present
+      # Don't actually *install* prelink, just check whether we *would* install
+      # it.
+      check_mode: yes
+      register: prelink_install_simulation
+
+    - when: prelink_install_simulation.changed
+      block:
+
+        - name: disable prelinking in /etc/sysconfig/prelink
+          replace:
+            path: /etc/sysconfig/prelink
+            regexp: 'PRELINKING=yes'
+            replace: 'PRELINKING=no'
+
+        - name: undo prelink actions
+          shell: prelink -uav >> /var/log/prelink/prelink.log 2>&1
+
+        - name: delete prelink cache
+          file:
+            path: /etc/prelink.cache
+            state: absent
+
+        - name: remove prelink package
+          yum:
+            name: prelink
+            state: absent
 
 # vim:ft=yaml.ansible:
