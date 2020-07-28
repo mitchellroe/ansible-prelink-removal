@@ -3,8 +3,17 @@
 #
 # Main playbook for the prelink removal project.
 
-- name: Remove prelink from hosts on which it is disabled
-  hosts: all
+- name: Create ephemeral inventory groups
+- hosts: all
+  tasks:
+    - name: Group hosts based on OS distribution and major version
+      group_by:
+        key: "{{ ansible_os_family }}_{{ ansible_distribution_major_version }}"
+      # Run even if we were passed `--check`
+      check_mode: no
+
+- name: Remove prelink from RHEL 7 hosts on which it is disabled
+  hosts: RedHat_7
   become: yes
   tasks:
 
