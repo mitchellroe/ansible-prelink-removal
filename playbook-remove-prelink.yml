@@ -12,9 +12,10 @@
       # Run even if we were passed `--check`
       check_mode: no
 
-- name: Remove prelink from RHEL 7 hosts on which it is disabled
+- name: Disable and remove prelink from RHEL 7 hosts
   hosts: RedHat_7
   become: yes
+  gather_facts: no
   tasks:
 
     - name: check whether prelink is installed
