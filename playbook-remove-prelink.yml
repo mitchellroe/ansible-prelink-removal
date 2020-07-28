@@ -21,13 +21,13 @@
     - name: check whether prelink is installed
       yum:
         name: prelink
-        state: present
-      # Don't actually *install* prelink, just check whether we *would* install
+        state: absent
+      # Don't actually *remove* prelink, just check whether we *would* remove
       # it.
       check_mode: yes
-      register: prelink_install_simulation
+      register: prelink_remove_simulation
 
-    - when: prelink_install_simulation.changed
+    - when: prelink_remove_simulation.changed
       block:
 
         - name: disable prelinking in /etc/sysconfig/prelink
