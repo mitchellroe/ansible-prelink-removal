@@ -1,5 +1,5 @@
 ---
-# file: playbook-site.yml
+# file: playbook-remove-prelink.yml
 #
 # Main playbook for the prelink removal project.
 
