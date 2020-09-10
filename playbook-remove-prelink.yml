@@ -18,16 +18,10 @@
   gather_facts: no
   tasks:
 
-    - name: check whether prelink is installed
-      yum:
-        name: prelink
-        state: absent
-      # Don't actually *remove* prelink, just check whether we *would* remove
-      # it.
-      check_mode: yes
-      register: prelink_remove_simulation
+    - name: gather package information
+      package_facts:
 
-    - when: prelink_remove_simulation.changed
+    - when: "'prelink' in ansible_facts.packages"
       block:
 
         - name: disable prelinking in /etc/sysconfig/prelink
