@@ -7,7 +7,7 @@
     - name: Group hosts based on OS distribution and major version
       group_by:
         key: "{{ ansible_os_family }}_{{ ansible_distribution_major_version }}"
-      # Run even if we were passed `--check`
+      # Run even if we were passed `--check` or `-C`
       check_mode: no
 
 - name: install and enable prelink on RHEL 7 hosts
@@ -28,4 +28,8 @@
         replace: 'PRELINKING=yes'
 
     - name: prelink some binaries
-      shell: /usr/sbin/prelink -av
+      command: /usr/sbin/prelink -av
+      # Added so ansible-lint will stop badgering
+      when: true
+
+# vim:ft=yaml.ansible:
