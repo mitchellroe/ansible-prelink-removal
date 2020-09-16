@@ -16,6 +16,12 @@
   hosts: RedHat_7
   become: yes
   gather_facts: no
+  vars_prompt:
+    - name: reboot_choice
+      prompt: "Would you like to reboot boxes if they change (y/n)?"
+      default: "n"
+      unsafe: yes
+      private: no
   tasks:
 
     - name: gather package information
@@ -42,5 +48,15 @@
           yum:
             name: prelink
             state: absent
+
+        - when: reboot_choice == 'y' or reboot_choice == 'Y'
+          block:
+
+            - name: reboot confirmation
+              pause:
+                prompt: "Press ENTER to reboot changed boxes or Ctrl+C to quit"
+
+            - name: reboot changed boxes
+              reboot:
 
 # vim:ft=yaml.ansible:
