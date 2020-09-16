@@ -1,5 +1,7 @@
 ---
 # file: private/playbook-install-prelink.yml
+#
+# This exists as the testing counterpart to playbook-prelink-removal.yml
 
 - name: Create ephemeral inventory groups
   hosts: all
