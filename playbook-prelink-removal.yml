@@ -22,6 +22,10 @@
       default: "n"
       unsafe: yes
       private: no
+  handlers:
+    - name: reboot boxes
+      when: reboot_choice == 'y' or reboot_choice == 'Y'
+      include_tasks: tasks/reboot-boxes.yml
   tasks:
 
     - name: gather package information
@@ -35,28 +39,22 @@
             path: /etc/sysconfig/prelink
             regexp: 'PRELINKING=yes'
             replace: 'PRELINKING=no'
+          notify: reboot boxes
 
         - name: undo prelink actions
           shell: prelink -uav >> /var/log/prelink/prelink.log 2>&1
+          notify: reboot boxes
 
         - name: delete prelink cache
           file:
             path: /etc/prelink.cache
             state: absent
+          notify: reboot boxes
 
         - name: remove prelink package
           yum:
             name: prelink
             state: absent
-
-        - when: reboot_choice == 'y' or reboot_choice == 'Y'
-          block:
-
-            - name: reboot confirmation
-              pause:
-                prompt: "Press ENTER to reboot changed boxes or Ctrl+C to quit"
-
-            - name: reboot changed boxes
-              reboot:
+          notify: reboot boxes
 
 # vim:ft=yaml.ansible:
